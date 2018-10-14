@@ -1,17 +1,17 @@
-(ns resultfult-api.lifecycle
-  (:require [ring.adapter.jetty :refer [run-jetty]]))
-
+(ns resultfult-api.lifecycle)
 
 (defprotocol LifeCycle
   (start [this])
   (stop [this]))
 
-
 (defn start-system [system]
-  (doseq [s (->> system :order (map system))]
-    (stop s)))
+  (doseq [s (->> system
+                 :order
+                 (map system))]
+    (start s)))
 
-;; (defrecord JettyServer [cfg state]
-;;   LifeCycle
-;;   (start [_]
-;;     (reset! state (run-jetty ))))
+(defn stop-system [system]
+  (doseq [s (->> system
+                 :order
+                 (map system))]
+    (stop s)))
