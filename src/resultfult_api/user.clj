@@ -26,9 +26,12 @@
   (-> (update user-req :password hashers/derive)
       (rename-keys {:password :password_hash})))
 
+(def spy #(do (println "DEBUG: " %) %))
+
 (defn create-user-handler [create-user-req]
   (->> (canonicalize-user-req create-user-req)
        (db/insert! User)
+       spy
        :id
        id->created))
 

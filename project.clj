@@ -7,7 +7,9 @@
                  ; WEB
                  [prismatic/schema "1.1.9"]
                  [metosin/compojure-api "2.0.0-alpha26"]
+                 [ring "1.7.0"]
                  [ring/ring-jetty-adapter "1.6.3"]
+                 [org.clojure/tools.namespace "0.2.11"]
                  ; Database
                  [toucan "1.1.9"]
                  [org.postgresql/postgresql "42.2.4"]
