@@ -5,8 +5,8 @@
             [clojure.set :refer [rename-keys]]
             [toucan.db :as db]
             [resultfult-api.models.user :refer [User]]
-            [ring.util.http-response :refer [created]]
-            [compojure.api.sweet :refer [POST]]))
+            [ring.util.http-response :refer [created ok]]
+            [compojure.api.sweet :refer [POST GET]]))
 
 (defn valid-username? [name]
   (str/non-blank-with-max-length? 50 name))
@@ -31,11 +31,25 @@
 (defn create-user-handler [create-user-req]
   (->> (canonicalize-user-req create-user-req)
        (db/insert! User)
-       spy
        :id
        id->created))
+
+(defn get-users-handler []
+  (->> (db/select User)
+       (map #(dissoc % :password_hash))
+       ok))
+
+(defn get-user-handler [id]
+  (-> (User id)
+      (dissoc :password_hash)
+      ok))
 
 (def user-routes
   [(POST "/users" []
      :body [create-user-req UserRequestSchema]
-     (create-user-handler create-user-req))])
+     (create-user-handler create-user-req))
+   (GET "/users" []
+     (get-users-handler))
+   (GET "/users/:id" []
+     :path-params [id :- s/Int]
+     (get-user-handler id))])

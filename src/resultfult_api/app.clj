@@ -10,6 +10,6 @@
    (ring.util.http-response/not-found {:not "found"})))
 
 (def create-app
-  (wrap-reload
-   (api (apply routes user-routes
+  (api
+   (wrap-reload (apply routes user-routes
                        (undocumented not-found-routes)))))
