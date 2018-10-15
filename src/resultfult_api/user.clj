@@ -6,7 +6,7 @@
             [toucan.db :as db]
             [resultfult-api.models.user :refer [User]]
             [ring.util.http-response :refer [created ok]]
-            [compojure.api.sweet :refer [POST GET PUT]]))
+            [compojure.api.sweet :refer [POST GET PUT DELETE]]))
 
 (defn valid-username? [name]
   (str/non-blank-with-max-length? 50 name))
@@ -48,6 +48,10 @@
   (db/update! User id (canonicalize-user-req update-user-req))
   (ok))
 
+(defn delete-user-handler [user-id]
+  (db/delete! User :id user-id)
+  (ok))
+
 (def user-routes
   [(POST "/users" []
      :body [create-user-req UserRequestSchema]
@@ -60,4 +64,7 @@
    (PUT "/users/:id" []
      :path-params [id :- s/Int]
      :body [update-user-req UserRequestSchema]
-     (update-user-handler id update-user-req))])
+     (update-user-handler id update-user-req))
+   (DELETE "/users/:id" []
+     :path-params [id :- s/Int]
+     (delete-user-handler id))])
